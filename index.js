@@ -15,7 +15,7 @@ app.listen(PORT, () => {
 
 // Bot connection config
 const botArgs = {
-  host: 'verdantnetwork238.ncsh.gg', // Your MCServerHost IP
+  host: 'goated1.mcsh.gg', // Your MCServerHost IP
   port: 25565,
   username: 'AFK_Bot_247',
   version: false
