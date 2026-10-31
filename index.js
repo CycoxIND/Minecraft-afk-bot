@@ -1,7 +1,7 @@
 const mineflayer = require('mineflayer');
 const express = require('express');
 
-// Express server required by Render free tier
+// Express server to keep Render web service active
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -13,9 +13,9 @@ app.listen(PORT, () => {
   console.log(`Web server active on port ${PORT}`);
 });
 
-// Bot connection config
+// Server Configuration
 const botArgs = {
-  host: 'goated1.mcsh.gg', // Your MCServerHost IP
+  host: 'goated1.mcsh.gg', // Your MCServerHost address
   port: 25565,
   username: 'AFK_Bot_247',
   version: false
@@ -30,21 +30,45 @@ function createBot() {
 
   bot.on('spawn', () => {
     console.log('[BOT] Spawned into server!');
-    // Jump every 45s to avoid AFK kicks
+    
+    // 1. Send periodic chat to simulate human activity (Every 7 minutes)
     setInterval(() => {
-      bot.setControlState('jump', true);
-      setTimeout(() => bot.setControlState('jump', false), 500);
-    }, 45000);
+      if (bot && bot.chat) {
+        bot.chat('AFK Bot active');
+      }
+    }, 420000);
+
+    // 2. Dynamic Movement Loop (Every 12 seconds)
+    setInterval(() => {
+      if (!bot || !bot.entity) return;
+
+      const actions = ['jump', 'forward', 'back', 'left', 'right', 'sneak'];
+      const randomAction = actions[Math.floor(Math.random() * actions.length)];
+
+      // Random head rotation
+      const yaw = Math.random() * Math.PI * 2;
+      const pitch = (Math.random() - 0.5) * (Math.PI / 2);
+      bot.look(yaw, pitch, true);
+
+      // Perform physical action briefly
+      bot.setControlState(randomAction, true);
+      setTimeout(() => {
+        bot.setControlState(randomAction, false);
+      }, 1200);
+    }, 12000);
   });
 
+  // Handle Unexpected Errors
   bot.on('error', (err) => {
-    console.error('[BOT ERROR]', err);
+    console.error('[BOT ERROR]', err.message || err);
   });
 
+  // Immediate Auto-Reconnect when kicked or disconnected
   bot.on('end', (reason) => {
-    console.log(`[BOT] Disconnected (${reason}). Reconnecting in 15s...`);
-    setTimeout(createBot, 15000);
+    console.log(`[BOT] Disconnected (${reason}). Reconnecting in 10 seconds...`);
+    setTimeout(createBot, 10000);
   });
 }
 
+// Initial Bot Startup
 createBot();
