@@ -15,7 +15,7 @@ app.listen(PORT, () => {
 
 // Server Configuration
 const botArgs = {
-  host: 'goated1.mcsh.gg', // Your MCServerHost address
+  host: 'thegoatedone.mcsh.gg', // Your MCServerHost address
   port: 25565,
   username: 'AFK_Bot_247',
   version: false
